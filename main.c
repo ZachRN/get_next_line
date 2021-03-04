@@ -1,5 +1,6 @@
 #include "get_next_line.h"
 
+//test
 int main(int argc, char *argv[])
 {
 	char *line;
