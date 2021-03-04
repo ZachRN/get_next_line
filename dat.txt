@@ -1,0 +1,4 @@
+double test
+triple test
+quad test
+monkey test
