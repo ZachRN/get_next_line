@@ -8,6 +8,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 
+# define FD_TOTAL 128
 int	get_next_line(int fd, char **line);
 
 #endif
