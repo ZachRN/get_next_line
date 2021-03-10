@@ -1,22 +1,38 @@
 #include "get_next_line.h"
 
-void *org_realloc(char *ptr, size_t size)
-{
-	int i = 0;
-	char *tohold;
+// void *org_realloc(char *ptr, size_t size)
+// {
+// 	int i = 0;
+// 	char *tohold;
 
-	if (!ptr || !size)
-		return (NULL);
-	tohold = (char *)malloc(size + 1);
-	while (ptr[i])
+// 	if (!ptr || !size)
+// 		return (NULL);
+// 	tohold = (char *)malloc(size + 1);
+// 	while (ptr[i])
+// 	{
+// 		tohold[i] = ptr[i];
+// 		i++;
+// 	}
+// 	tohold[i] = '\0';
+// 	free(ptr);
+// 	ptr=tohold;
+// 	return (ptr);
+// }
+
+char	*ft_strchr(const char *str, int c)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0')
 	{
-		tohold[i] = ptr[i];
+		if (str[i] == c)
+			return ((char *)&str[i]);
 		i++;
 	}
-	tohold[i] = '\0';
-	free(ptr);
-	ptr=tohold;
-	return (ptr);
+	if (c == 0)
+		return ((char *)&str[i]);
+	return (NULL);
 }
 
 int	ft_strlen(const char *str)
@@ -57,27 +73,50 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (s3);
 }
 
+char	*ft_strdup(const char *s)
+{
+	char	*str;
+	int		strlen;
+	int		i;
+
+	strlen = ft_strlen(s);
+	str = malloc(sizeof(char) * (strlen + 1));
+	if (str == NULL)
+		return (NULL);
+	i = 0;
+	while (i < strlen)
+	{
+		str[i] = s[i];
+		i++;
+	}
+	str[i] = '\0';
+	return (str);
+}
+
 int get_next_line(int fd, char **line)
 {
-	char *buf;
+	static char *all_fd[FD_TOTAL];
+	char buf[BUFFER_SIZE + 1];
 	char *temp;
-	int bytes;
 
-	buf = (char *)malloc(BUFFER_SIZE + 1);
-	temp = (char *)malloc(BUFFER_SIZE + 1);
-	bytes = read(fd, buf, BUFFER_SIZE);
-	buf[BUFFER_SIZE] = '\0';
-	printf("What has been read:\n%s", buf);
-	printf("\nThis is how many bytes:%d\n",bytes);
+	if (!all_fd[fd])
+		all_fd[fd] = ft_strdup("");
+	while (read(fd, buf, BUFFER_SIZE) > 0)
+	{
+		buf[BUFFER_SIZE] = '\0';
+		temp = buf;
+		all_fd[fd] = ft_strjoin(all_fd[fd], temp);
+		if (ft_strchr(temp,'\n'))
+			break;
+	}
+	printf("This is the current of all_fd[%d]\n%s\n",fd,all_fd[fd]);
 	// bytes = read(fd,temp,BUFFER_SIZE);
 	// printf("What has been read:\n%s",temp);
 	// printf("\nThis is how many bytes:%d\n",bytes);
 	// buf = ft_strjoin(buf, temp);
 	// printf("This is using strjoin on them:\n%s",buf);
-	free(buf);
 	// free(temp);
 	return (1);
-
 	// static char allfiles[100];
 	// char buf[BUFFER_SIZE];
 	// char temp;
