@@ -28,7 +28,6 @@ int file_stuff(int fd, char **line, int returnvalue, char *all_fd)
 		free(temp);
 	}
 	return (0);
-	
 }
 
 int get_next_line(int fd, char **line)
