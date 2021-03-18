@@ -14,18 +14,15 @@ int file_stuff(int fd, char **line, int returnvalue, char *all_fd)
 	{	
 		temp = (char *)malloc(sizeof(char) * pos + 1);
 		ft_strlcpy(temp, all_fd, pos + 1);
-		//line == temp;
-		printf("This is a full new line:%s\n",temp);
+		*line = temp;
+		//printf("%s\n",temp);
 		strlen = ft_strlen(all_fd);
 		ft_strlcpy(all_fd, &all_fd[pos + 1], strlen - pos + 1);
-		free(temp);
 		return (1);
 	}
 	else if (all_fd[pos] == '\0')
 	{
-		temp = ft_strdup(all_fd);
-		printf("This is a full new line:%s\n",temp);
-		free(temp);
+		*line = all_fd;
 	}
 	return (0);
 }
@@ -39,8 +36,8 @@ int get_next_line(int fd, char **line)
 	int readbytes;
 
 	returnvalue = 0;
-	//if (fd < 0 || !line || BUFFER_SIZE < 1)
-		//return (-1);
+	if (fd < 0 || !line || BUFFER_SIZE < 1)
+	 	return (-1);
 	if (!all_fd[fd])
 		all_fd[fd] = ft_strdup("\0");
 	while ((readbytes = read(fd, buf, BUFFER_SIZE)) > 0)
@@ -49,16 +46,16 @@ int get_next_line(int fd, char **line)
 		temp = ft_strjoin(all_fd[fd], buf);
 		free(all_fd[fd]);
 		all_fd[fd] = temp;
-		returnvalue = 1;
 		if (ft_strchr(temp,'\n'))
 			break;
 	}
 	returnvalue = file_stuff(fd, line, returnvalue, all_fd[fd]);
-	if (returnvalue == 0)
-		{
-			free(all_fd[fd]);
-		}
-	printf("This is the saved bit after reading but not to discard:%s\n", all_fd[fd]);
+	// if (returnvalue == 0)
+	// 	{
+	// 		free(all_fd[fd]);
+	// 		all_fd[fd] = NULL;
+	// 	}
+	//printf("This is the saved bit after reading but not to discard:%s\n", all_fd[fd]);
 	return (returnvalue);
 }
 
