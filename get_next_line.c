@@ -39,7 +39,7 @@ int get_next_line(int fd, char **line)
 	int readbytes;
 
 	returnvalue = 0;
-	//if (fd < 0 || !line || BUFFER_SIZE == 0)
+	//if (fd < 0 || !line || BUFFER_SIZE < 1)
 		//return (-1);
 	if (!all_fd[fd])
 		all_fd[fd] = ft_strdup("\0");
