@@ -1,7 +1,3 @@
-Yoooo what up 
-i am zachary 
-this is my file 
-i am just randomly typing 
-this line has a \n in it to see what happens
-and this has a \\n line just for fun 
-maybe it work who knows we see
+test
+attempting
+maybe test?

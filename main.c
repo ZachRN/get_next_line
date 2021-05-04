@@ -12,16 +12,16 @@ int main(int argc, char *argv[])
 	printf("%d\n",hi);
 	printf("this is argv[1]:%s\n",argv[1]);
 	printf("this is the fd #:%d\n",fd);
-	// if (fd >= 0)
-	// {
-	// 	while (get_next_line(0,&line))
-	// 		{
-	// 			printf("%s\n",line);
-	// 			free(line);
-	// 		}
-	// }
-	get_next_line(0, &line);
-	printf("%s\n", line);;
+	if (fd >= 0)
+	{
+		while (get_next_line(fd,&line))
+			{
+				printf("%s\n",line);
+				free(line);
+			}
+	}
+	// get_next_line(0, &line);
+	// printf("%s\n", line);;
 	free(line);
 	close(fd);
 	//get_next_line(fd, line);
