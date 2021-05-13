@@ -1,49 +1,91 @@
 #include "get_next_line.h"
 
-int	file_stuff(char **line, char *all_fd)
+int	send_new_line(char **line, int fd, t_filehold *file, int pos)
+{
+	char	*temp;
+	int		strlen;
+
+	temp = (char *)malloc(sizeof(char) * pos + 1);
+	if (!temp)
+		return (-1);
+	ft_strlcpy(temp, file->all_fd[fd], pos + 1);
+	if (!temp)
+		return (-1);
+	*line = temp;
+	strlen = ft_strlen(file->all_fd[fd]);
+	ft_strlcpy(file->all_fd[fd], &file->all_fd[fd][pos + 1], strlen - pos + 1);
+	if (!file->all_fd[fd])
+		return (-1);
+	return (1);
+}
+
+int	send_EOF(char **line, int fd, t_filehold *file, int pos)
+{
+	char	*temp;
+	int		strlen;
+
+	temp = (char *)malloc(sizeof(char) * pos + 1);
+	if (!temp)
+		return (-1);
+	ft_strlcpy(temp, file->all_fd[fd], pos + 1);
+	if (!temp)
+		return (-1);
+	*line = temp;
+	strlen = ft_strlen(file->all_fd[fd]);
+	ft_strlcpy(file->all_fd[fd], &file->all_fd[fd][pos + 1], strlen - pos + 1);
+	if (!file->all_fd[fd])
+		return (-1);
+	return (0);
+}
+
+int	file_stuff(char **line, t_filehold *file, int fd)
 {
 	int		pos;
-	int		strlen;
-	char	*temp;
 
 	pos = 0;
-	while (all_fd[pos] != '\n' && all_fd[pos] != '\0')
+	while (file->all_fd[fd][pos] != '\n' && file->all_fd[fd][pos] != '\0')
 		pos++;
-	if (all_fd[pos] == '\n')
-	{
-		temp = (char *)malloc(sizeof(char) * pos + 1);
-		ft_strlcpy(temp, all_fd, pos + 1);
-		*line = temp;
-		strlen = ft_strlen(all_fd);
-		ft_strlcpy(all_fd, &all_fd[pos + 1], strlen - pos + 1);
-		return (1);
-	}
-	else if (all_fd[pos] == '\0')
-		*line = all_fd;
+	if (file->all_fd[fd][pos] == '\n')
+		return (send_new_line(line, fd, file, pos));
+	else if (file->all_fd[pos] == '\0')
+		return (send_EOF(line, fd, file, pos));
 	return (0);
+}
+
+int	process_next_line(int fd, t_filehold *files, int readbytes)
+{
+	char	*temp;
+
+	files->buf[readbytes] = '\0';
+	temp = ft_strjoin(files->all_fd[fd], files->buf);
+	if (!temp)
+		return (-1);
+	free(files->all_fd[fd]);
+	files->all_fd[fd] = temp;
+	return (1);
 }
 
 int	get_next_line(int fd, char **line)
 {
-	static char	*all_fd[FD_TOTAL];
-	char		buf[BUFFER_SIZE + 1];
-	char		*temp;
-	int			readbytes;
+	static t_filehold	files;
+	int					readbytes;
 
 	if (fd < 0 || !line || BUFFER_SIZE < 1)
 		return (-1);
-	if (!all_fd[fd])
-		all_fd[fd] = ft_strdup("\0");
-	readbytes = read(fd, buf, BUFFER_SIZE);
-	while (readbytes)
+	if (!files.all_fd[fd])
+		files.all_fd[fd] = ft_strdup("\0");
+	if (!files.all_fd[fd])
+		return (-1);
+	readbytes = read(fd, files.buf, BUFFER_SIZE);
+	while (readbytes > 0)
 	{
-		buf[readbytes] = '\0';
-		temp = ft_strjoin(all_fd[fd], buf);
-		free(all_fd[fd]);
-		all_fd[fd] = temp;
-		if (ft_strchr(temp, '\n'))
+		if (!process_next_line(fd, &files, readbytes))
+			return (-1);
+		if (ft_strchr(files.all_fd[fd], '\n'))
 			break ;
-		readbytes = read(fd, buf, BUFFER_SIZE);
+		readbytes = read(fd, files.buf, BUFFER_SIZE);
 	}
-	return (file_stuff(line, all_fd[fd]));
+	if (readbytes == -1)
+		return (-1);
+	return (file_stuff(line, &files, fd));
 }
