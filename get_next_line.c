@@ -70,7 +70,6 @@ int	get_next_line(int fd, char **line)
 {
 	static t_filehold	files;
 	int					readbytes;
-	int return_val;
 
 	if (fd < 0 || !line || BUFFER_SIZE < 1)
 		return (-1);
@@ -87,8 +86,7 @@ int	get_next_line(int fd, char **line)
 			break ;
 		readbytes = read(fd, files.buf, BUFFER_SIZE);
 	}
-	return_val = file_stuff(line, &files, fd);
-	if (readbytes == -1 || !line)
+	if (readbytes == -1 && !line)
 		return (-1);
-	return (return_val);
+	return (file_stuff(line, &files, fd));
 }
