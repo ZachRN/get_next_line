@@ -14,7 +14,7 @@
 #  define BUFFER_SIZE 32
 # endif
 
-# define FD_TOTAL 128
+# define FD_TOTAL 2048
 
 typedef struct	s_filehold
 {

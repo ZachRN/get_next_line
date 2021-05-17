@@ -71,7 +71,7 @@ int	get_next_line(int fd, char **line)
 	static t_filehold	files;
 	int					readbytes;
 
-	if (fd < 0 || !line || BUFFER_SIZE < 1)
+	if (fd == -1 || !line || BUFFER_SIZE < 1)
 		return (-1);
 	if (!files.all_fd[fd])
 		files.all_fd[fd] = ft_strdup("\0");
@@ -86,7 +86,7 @@ int	get_next_line(int fd, char **line)
 			break ;
 		readbytes = read(fd, files.buf, BUFFER_SIZE);
 	}
-	if (readbytes == 0 && !line)
+	if (readbytes == -1)
 		return (-1);
 	return (file_stuff(line, &files, fd));
 }
