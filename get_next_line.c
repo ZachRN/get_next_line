@@ -1,4 +1,5 @@
 #include "get_next_line.h"
+#include <stdio.h>
 
 int	send_new_line(char **line, int fd, t_filehold *file, int pos)
 {
@@ -47,7 +48,7 @@ int	file_stuff(char **line, t_filehold *file, int fd)
 		pos++;
 	if (file->all_fd[fd][pos] == '\n')
 		return (send_new_line(line, fd, file, pos));
-	else if (file->all_fd[pos] == '\0')
+	else if (file->all_fd[fd][pos] == '\0')
 		return (send_EOF(line, fd, file, pos));
 	return (0);
 }
