@@ -86,7 +86,7 @@ int	get_next_line(int fd, char **line)
 			break ;
 		readbytes = read(fd, files.buf, BUFFER_SIZE);
 	}
-	if (readbytes == -1 && !line)
+	if (readbytes == 0 && !line)
 		return (-1);
 	return (file_stuff(line, &files, fd));
 }
