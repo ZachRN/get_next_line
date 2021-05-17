@@ -73,6 +73,7 @@ int	get_next_line(int fd, char **line)
 
 	if (fd < 0 || !line || BUFFER_SIZE < 1)
 		return (-1);
+	*line = NULL;
 	if (!files.all_fd[fd])
 		files.all_fd[fd] = ft_strdup("\0");
 	if (!files.all_fd[fd])
