@@ -6,8 +6,8 @@
 # include <stdlib.h>
 
 # if BUFFER_SIZE < 0
-# undef BUFFER_SIZE
-# define BUFFER_SIZE 0
+#  undef BUFFER_SIZE
+#  define BUFFER_SIZE 0
 # endif
 
 # ifndef BUFFER_SIZE
