@@ -1,42 +1,40 @@
 #include "get_next_line.h"
 
-int	send_new_line(char **line, int fd, t_filehold *file, int pos)
+char	*send_new_line(int fd, t_filehold *file, int pos)
 {
 	char	*temp;
 	int		strlen;
 
-	temp = (char *)malloc(sizeof(char) * pos + 1);
+	temp = (char *)malloc(sizeof(char) * pos + 2);
 	if (!temp)
 	{
 		free(file->all_fd[fd]);
-		return (-1);
+		return (NULL);
 	}
-	ft_strlcpy(temp, file->all_fd[fd], pos + 1);
-	*line = temp;
+	ft_strlcpy(temp, file->all_fd[fd], pos + 2);
 	strlen = ft_strlen(file->all_fd[fd]);
 	ft_strlcpy(file->all_fd[fd], &file->all_fd[fd][pos + 1], strlen - pos + 1);
-	return (1);
+	return (temp);
 }
 
-int	send_EOF(char **line, int fd, t_filehold *file, int pos)
+char	*send_EOF(int fd, t_filehold *file, int pos)
 {
 	char	*temp;
 	int		strlen;
 
-	temp = (char *)malloc(sizeof(char) * pos + 1);
+	temp = (char *)malloc(sizeof(char) * pos + 2);
 	if (!temp)
 	{
 		free(file->all_fd[fd]);
-		return (-1);
+		return (NULL);
 	}
-	ft_strlcpy(temp, file->all_fd[fd], pos + 1);
-	*line = temp;
+	ft_strlcpy(temp, file->all_fd[fd], pos + 2);
 	strlen = ft_strlen(file->all_fd[fd]);
 	ft_strlcpy(file->all_fd[fd], &file->all_fd[fd][pos + 1], strlen - pos + 1);
-	return (0);
+	return (NULL);
 }
 
-int	file_stuff(char **line, t_filehold *file, int fd)
+char	*file_stuff(t_filehold *file, int fd)
 {
 	int		pos;
 
@@ -44,10 +42,10 @@ int	file_stuff(char **line, t_filehold *file, int fd)
 	while (file->all_fd[fd][pos] != '\n' && file->all_fd[fd][pos] != '\0')
 		pos++;
 	if (file->all_fd[fd][pos] == '\n')
-		return (send_new_line(line, fd, file, pos));
+		return (send_new_line(fd, file, pos));
 	else if (file->all_fd[fd][pos] == '\0')
-		return (send_EOF(line, fd, file, pos));
-	return (0);
+		return (send_EOF(fd, file, pos));
+	return (NULL);
 }
 
 int	process_next_line(int fd, t_filehold *files, int readbytes)
@@ -66,23 +64,23 @@ int	process_next_line(int fd, t_filehold *files, int readbytes)
 	return (1);
 }
 
-int	get_next_line(int fd, char **line)
+char	*get_next_line(int fd)
 {
 	static t_filehold	files;
 	int					readbytes;
 
-	if (fd == -1 || !line || BUFFER_SIZE < 1 || fd > FD_TOTAL)
-		return (-1);
+	if (fd == -1 || BUFFER_SIZE < 1 || fd > FD_TOTAL)
+		return (NULL);
 	if (!files.all_fd[fd])
 		files.all_fd[fd] = ft_strdup("\0");
 	if (!files.all_fd[fd])
-		return (-1);
+		return (NULL);
 	readbytes = 1;
 	files.buf[0] = '\0';
 	while (readbytes > 0)
 	{
 		if (!process_next_line(fd, &files, readbytes))
-			return (-1);
+			return (NULL);
 		if (ft_strchr(files.all_fd[fd], '\n'))
 			break ;
 		readbytes = read(fd, files.buf, BUFFER_SIZE);
@@ -90,7 +88,7 @@ int	get_next_line(int fd, char **line)
 	if (readbytes == -1)
 	{
 		free(files.all_fd[fd]);
-		return (-1);
+		return (NULL);
 	}
-	return (file_stuff(line, &files, fd));
+	return (file_stuff(&files, fd));
 }

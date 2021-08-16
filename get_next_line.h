@@ -16,13 +16,13 @@
 
 # define FD_TOTAL 2048
 
-typedef struct	s_filehold
+typedef struct s_filehold
 {
-	char *all_fd[FD_TOTAL];
-	char buf[BUFFER_SIZE + 1];
+	char	*all_fd[FD_TOTAL];
+	char	buf[BUFFER_SIZE + 1];
 }				t_filehold;
 
-int		get_next_line(int fd, char **line);
+char	*get_next_line(int fd);
 char	*ft_strchr(const char *str, int c);
 int		ft_strlen(const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
