@@ -1,4 +1,4 @@
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*send_new_line(int fd, t_filehold *file, int pos)
 {
